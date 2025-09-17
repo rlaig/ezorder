@@ -70,13 +70,8 @@ QR Code Scan → Menu Display → Order Creation → Payment → Order Processin
 
 #### 3.1.2 Global Settings
 - **System Configuration**
-  - Platform-wide fee structures
-  - Payment method availability
-  - Feature rollout controls
-- **Operational Parameters**
-  - Order timeout settings
-  - Notification preferences
-  - Regional customizations
+  - Toggle support for loyalty program
+  - Toggle review system
 
 #### 3.1.3 Analytics & Reporting
 - **Platform Metrics**
@@ -114,6 +109,7 @@ QR Code Scan → Menu Display → Order Creation → Payment → Order Processin
   - Low inventory alerts
   - Automatic item disabling
 - **Schedule Management**
+  - Configurable lapsed time when Buzz or call staff will be allowable
   - Time-based menu availability (breakfast, lunch, dinner)
   - Special event menus
   - Seasonal item scheduling
@@ -189,12 +185,11 @@ QR Code Scan → Menu Display → Order Creation → Payment → Order Processin
 - **Item Display**
   - High-quality image galleries
   - Detailed descriptions
-  - Nutritional information (optional)
   - Allergen warnings
 
 #### 3.3.2 Item Customization
 - **Modifier Selection**
-  - Multiple choice options (size, spice level)
+  - Multiple choice options (size, spice level, etc)
   - Add-on selections with pricing
   - Replacement options
 - **Quantity Controls**
@@ -220,22 +215,15 @@ QR Code Scan → Menu Display → Order Creation → Payment → Order Processin
 #### 3.3.4 Order Tracking
 - **Status Display**
   - Real-time progress bar
-  - Estimated completion time
   - Stage-specific messaging
-- **Communication Tools**
-  - "Call Staff" emergency button
-  - Order modification requests
-  - Special assistance alerts
 - **Notification System**
   - Order status change alerts
   - Pickup ready notifications
-  - SMS/email receipt delivery
 
 #### 3.3.5 Feedback & Loyalty
 - **Review System**
   - Post-order rating prompts
   - Comment submission
-  - Photo upload capability
 - **Loyalty Program**
   - Point earning system
   - Guest profile creation (optional)
@@ -272,7 +260,6 @@ QR Code Scan → Menu Display → Order Creation → Payment → Order Processin
 - **Capabilities**:
   - Modifier selection (size, spice level, add-ons)
   - Quantity adjustment
-  - Special instruction notes
   - Real-time price calculation
 - **Validation**: Item availability and modification limits
 
@@ -289,12 +276,13 @@ QR Code Scan → Menu Display → Order Creation → Payment → Order Processin
 
 #### Step 5: Order Tracking
 - **Status Monitoring**:
+  - Track Order transaction ID
   - Real-time status bar updates (15-second intervals)
-  - Estimated preparation time display
+  - When order is being prepared show elapsed time
   - Stage-specific messaging
 - **Communication Options**:
-  - "Call Staff" assistance button
   - Order status notifications
+  - Buzz or notify staff when certain elapsed time is reached
 - **Completion**: Pickup notification and feedback prompt
 
 ### 4.2 Merchant Order Processing Workflow
@@ -304,26 +292,23 @@ QR Code Scan → Menu Display → Order Creation → Payment → Order Processin
 - **Notifications**:
   - Audible alert in merchant dashboard
   - Visual notification on screen
-  - Mobile app push notification (if available)
 - **Order Display**:
   - Complete order details
-  - Customer information (if provided)
+  - Customer information (if account logged in)
   - Table/location identifier
   - Payment method confirmation
 - **Initial Actions**:
   - Order acceptance/rejection options
-  - Preparation time estimation
   - Special instruction review
 
 #### Phase 2: Order Processing
 - **Status Management**:
   - Manual status updates through dashboard
-  - Automatic timer activation
   - Kitchen display integration
 - **Workflow States**:
   1. **Order Placed**: Order queued for review
   2. **Paid**: Payment confirmed, moved to preparation queue
-  3. **Preparing**: Active preparation with timer
+  3. **Preparing**: Active preparation with elapsed time showing
   4. **Ready for Pickup**: Completion with customer notification
   5. **Completed**: Customer pickup confirmation
   6. **Cancelled**: Cancellation with reason (available at any time)
@@ -331,47 +316,29 @@ QR Code Scan → Menu Display → Order Creation → Payment → Order Processin
   - Priority queue display
   - Item-level completion tracking
   - Special instruction highlighting
-  - Preparation time monitoring
+  - Elapsed time monitoring
 
 #### Phase 3: Exception Handling
-- **Order Modifications**:
-  - Customer change requests after payment
-  - Price adjustment calculations
-  - Approval/denial workflow
-  - Real-time customer communication
 - **Cancellation Process**:
   - Refund processing (if applicable)
-  - Inventory adjustment
   - Customer notification
   - Reason code documentation
-- **Staff Assistance**:
-  - "Call Staff" alert responses
-  - Priority messaging system
-  - Issue escalation protocols
 - **Inventory Management**:
   - Real-time out-of-stock updates
-  - Alternative item suggestions
-  - Automatic menu adjustments
 
 #### Phase 4: Communication & Updates
 - **Customer Notifications**:
   - Automatic status change alerts
-  - SMS/push notification delivery
   - Web app real-time updates
-- **Internal Coordination**:
-  - Kitchen-to-service messaging
-  - Staff task assignments
-  - Manager alert escalation
 - **Performance Tracking**:
   - Order completion time monitoring
   - Customer satisfaction correlation
-  - Staff performance metrics
 
 #### Phase 5: Order Completion
 - **Completion Process**:
   - Customer pickup confirmation
   - Order archival
-  - Feedback request initiation
+  - Feedback request initiation (if system enabled)
 - **Analytics Update**:
   - Performance metric calculation
   - Trend analysis data collection
