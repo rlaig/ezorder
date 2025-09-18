@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useOrders, useUpdateOrderStatus } from '../../hooks/useOrders';
-import type { Order } from '../../types';
+import type { Database } from '../../types';
 
 export const OrderQueue: React.FC = () => {
   const { user } = useAuth();
   const merchantId = user?.id || '';
   
-  const [statusFilter, setStatusFilter] = useState<Order['status'] | 'all'>('all');
+  const [statusFilter, setStatusFilter] = useState<Database.Orders['status'] | 'all'>('all');
   const { data: ordersData, isLoading } = useOrders(
     merchantId,
     1,
@@ -16,11 +16,11 @@ export const OrderQueue: React.FC = () => {
   );
   const updateOrderStatus = useUpdateOrderStatus();
   
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Database.Orders | null>(null);
 
   const orders = ordersData?.items || [];
 
-  const handleStatusChange = async (orderId: string, newStatus: Order['status']) => {
+  const handleStatusChange = async (orderId: string, newStatus: Database.Orders['status']) => {
     try {
       await updateOrderStatus.mutateAsync({ id: orderId, status: newStatus });
     } catch (error) {
@@ -28,7 +28,7 @@ export const OrderQueue: React.FC = () => {
     }
   };
 
-  const getStatusColor = (status: Order['status']) => {
+  const getStatusColor = (status: Database.Orders['status']) => {
     switch (status) {
       case 'placed': return 'bg-blue-100 text-blue-800';
       case 'preparing': return 'bg-yellow-100 text-yellow-800';
@@ -39,7 +39,7 @@ export const OrderQueue: React.FC = () => {
     }
   };
 
-  const getNextStatus = (currentStatus: Order['status']): Order['status'] | null => {
+  const getNextStatus = (currentStatus: Database.Orders['status']): Database.Orders['status'] | null => {
     switch (currentStatus) {
       case 'placed': return 'preparing';
       case 'preparing': return 'ready';
@@ -65,7 +65,7 @@ export const OrderQueue: React.FC = () => {
   const statusCounts = orders.reduce((acc, order) => {
     acc[order.status] = (acc[order.status] || 0) + 1;
     return acc;
-  }, {} as Record<Order['status'], number>);
+  }, {} as Record<Database.Orders['status'], number>);
 
   return (
     <div className="space-y-6">

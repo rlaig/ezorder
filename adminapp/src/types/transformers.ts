@@ -237,6 +237,109 @@ export const transformers = {
       ...(frontendOrder.completedAt && { completed_at: frontendOrder.completedAt }),
     }),
   },
+
+  // Order Item transformer
+  orderItem: {
+    toFrontend: (dbOrderItem: Database.OrderItems): Frontend.OrderItem => ({
+      id: dbOrderItem.id,
+      createdAt: dbOrderItem.created,
+      updatedAt: dbOrderItem.updated,
+      orderId: dbOrderItem.order_id,
+      menuItemId: dbOrderItem.menu_item_id,
+      itemName: dbOrderItem.item_name,
+      quantity: dbOrderItem.quantity,
+      unitPrice: dbOrderItem.unit_price,
+      totalPrice: dbOrderItem.total_price,
+      specialInstructions: dbOrderItem.special_instructions,
+      formattedUnitPrice: formatCurrency(dbOrderItem.unit_price),
+      formattedTotalPrice: formatCurrency(dbOrderItem.total_price),
+    }),
+
+    toDatabase: (frontendOrderItem: Partial<Frontend.OrderItem>): Partial<Database.OrderItems> => ({
+      ...(frontendOrderItem.orderId && { order_id: frontendOrderItem.orderId }),
+      ...(frontendOrderItem.menuItemId && { menu_item_id: frontendOrderItem.menuItemId }),
+      ...(frontendOrderItem.itemName && { item_name: frontendOrderItem.itemName }),
+      ...(typeof frontendOrderItem.quantity === 'number' && { quantity: frontendOrderItem.quantity }),
+      ...(typeof frontendOrderItem.unitPrice === 'number' && { unit_price: frontendOrderItem.unitPrice }),
+      ...(typeof frontendOrderItem.totalPrice === 'number' && { total_price: frontendOrderItem.totalPrice }),
+      ...(frontendOrderItem.specialInstructions && { special_instructions: frontendOrderItem.specialInstructions }),
+    }),
+  },
+
+  // Order Modifier transformer
+  orderModifier: {
+    toFrontend: (dbOrderModifier: Database.OrderModifiers): Frontend.OrderModifier => ({
+      id: dbOrderModifier.id,
+      createdAt: dbOrderModifier.created,
+      updatedAt: dbOrderModifier.updated,
+      orderItemId: dbOrderModifier.order_item_id,
+      modifierId: dbOrderModifier.modifier_id,
+      modifierName: dbOrderModifier.modifier_name,
+      optionName: dbOrderModifier.option_name,
+      optionValue: dbOrderModifier.option_value,
+      priceAdjustment: dbOrderModifier.price_adjustment,
+      formattedPriceAdjustment: formatCurrency(dbOrderModifier.price_adjustment),
+    }),
+
+    toDatabase: (frontendOrderModifier: Partial<Frontend.OrderModifier>): Partial<Database.OrderModifiers> => ({
+      ...(frontendOrderModifier.orderItemId && { order_item_id: frontendOrderModifier.orderItemId }),
+      ...(frontendOrderModifier.modifierId && { modifier_id: frontendOrderModifier.modifierId }),
+      ...(frontendOrderModifier.modifierName && { modifier_name: frontendOrderModifier.modifierName }),
+      ...(frontendOrderModifier.optionName && { option_name: frontendOrderModifier.optionName }),
+      ...(frontendOrderModifier.optionValue && { option_value: frontendOrderModifier.optionValue }),
+      ...(typeof frontendOrderModifier.priceAdjustment === 'number' && { price_adjustment: frontendOrderModifier.priceAdjustment }),
+    }),
+  },
+
+  // Payment transformer
+  payment: {
+    toFrontend: (dbPayment: Database.Payments): Frontend.Payment => {
+      const getStatusColor = (status: Database.Payments['status']) => {
+        switch (status) {
+          case 'pending': return 'yellow';
+          case 'completed': return 'green';
+          case 'failed': return 'red';
+          case 'refunded': return 'blue';
+          default: return 'yellow';
+        }
+      };
+
+      const getMethodLabel = (method: Database.Payments['method']) => {
+        switch (method) {
+          case 'cash': return 'Cash';
+          case 'gcash': return 'GCash';
+          case 'card': return 'Card';
+          default: return method;
+        }
+      };
+
+      return {
+        id: dbPayment.id,
+        createdAt: dbPayment.created,
+        updatedAt: dbPayment.updated,
+        orderId: dbPayment.order_id,
+        method: dbPayment.method,
+        status: dbPayment.status,
+        amount: dbPayment.amount,
+        transactionId: dbPayment.transaction_id,
+        metadata: dbPayment.metadata,
+        processedAt: dbPayment.processed_at,
+        formattedAmount: formatCurrency(dbPayment.amount),
+        statusColor: getStatusColor(dbPayment.status),
+        methodLabel: getMethodLabel(dbPayment.method),
+      };
+    },
+
+    toDatabase: (frontendPayment: Partial<Frontend.Payment>): Partial<Database.Payments> => ({
+      ...(frontendPayment.orderId && { order_id: frontendPayment.orderId }),
+      ...(frontendPayment.method && { method: frontendPayment.method }),
+      ...(frontendPayment.status && { status: frontendPayment.status }),
+      ...(typeof frontendPayment.amount === 'number' && { amount: frontendPayment.amount }),
+      ...(frontendPayment.transactionId && { transaction_id: frontendPayment.transactionId }),
+      ...(frontendPayment.metadata && { metadata: frontendPayment.metadata }),
+      ...(frontendPayment.processedAt && { processed_at: frontendPayment.processedAt }),
+    }),
+  },
 } as const;
 
 // Generic transformer utility

@@ -1,6 +1,6 @@
 import pb, { COLLECTIONS } from './pocketbase';
 import { castRecord, castRecords } from '../utils/pocketbase';
-import type { Order, OrderItem, OrderStats, PaginatedResponse } from '../types';
+import type { Database, OrderStats, PaginatedResponse } from '../types';
 
 export class OrderService {
   /**
@@ -10,8 +10,8 @@ export class OrderService {
     merchantId: string,
     page = 1,
     perPage = 20,
-    status?: Order['status']
-  ): Promise<PaginatedResponse<Order>> {
+    status?: Database.Orders['status']
+  ): Promise<PaginatedResponse<Database.Orders>> {
     try {
       let filter = `merchantId = "${merchantId}"`;
       if (status) {
@@ -25,7 +25,7 @@ export class OrderService {
       });
 
       return {
-        items: castRecords<Order>(result.items),
+        items: castRecords<Database.Orders>(result.items),
         page: result.page,
         perPage: result.perPage,
         totalItems: result.totalItems,
@@ -40,12 +40,12 @@ export class OrderService {
   /**
    * Get single order by ID
    */
-  static async getOrder(id: string): Promise<Order> {
+  static async getOrder(id: string): Promise<Database.Orders> {
     try {
       const record = await pb.collection(COLLECTIONS.ORDERS).getOne(id, {
         expand: 'orderItems',
       });
-      return castRecord<Order>(record);
+      return castRecord<Database.Orders>(record);
     } catch (error) {
       console.error('Get order error:', error);
       throw new Error('Failed to fetch order');
@@ -55,10 +55,10 @@ export class OrderService {
   /**
    * Update order status
    */
-  static async updateOrderStatus(id: string, status: Order['status']): Promise<Order> {
+  static async updateOrderStatus(id: string, status: Database.Orders['status']): Promise<Database.Orders> {
     try {
       const record = await pb.collection(COLLECTIONS.ORDERS).update(id, { status });
-      return castRecord<Order>(record);
+      return castRecord<Database.Orders>(record);
     } catch (error) {
       console.error('Update order status error:', error);
       throw new Error('Failed to update order status');
@@ -68,13 +68,13 @@ export class OrderService {
   /**
    * Get order items for an order
    */
-  static async getOrderItems(orderId: string): Promise<OrderItem[]> {
+  static async getOrderItems(orderId: string): Promise<Database.OrderItems[]> {
     try {
       const records = await pb.collection(COLLECTIONS.ORDER_ITEMS).getFullList({
         filter: `orderId = "${orderId}"`,
         sort: 'created',
       });
-      return castRecords<OrderItem>(records);
+      return castRecords<Database.OrderItems>(records);
     } catch (error) {
       console.error('Get order items error:', error);
       throw new Error('Failed to fetch order items');
@@ -99,7 +99,7 @@ export class OrderService {
         filter,
       });
       
-      const typedOrders = castRecords<Order>(orders);
+      const typedOrders = castRecords<Database.Orders>(orders);
 
       const totalOrders = typedOrders.length;
       const totalRevenue = typedOrders.reduce((sum, order) => sum + order.total_amount, 0);
@@ -108,7 +108,7 @@ export class OrderService {
       const ordersByStatus = typedOrders.reduce((acc, order) => {
         acc[order.status] = (acc[order.status] || 0) + 1;
         return acc;
-      }, {} as Record<Order['status'], number>);
+      }, {} as Record<Database.Orders['status'], number>);
 
       return {
         totalOrders,
@@ -125,10 +125,10 @@ export class OrderService {
   /**
    * Subscribe to real-time order updates
    */
-  static subscribeToOrders(merchantId: string, callback: (order: Order) => void) {
+  static subscribeToOrders(merchantId: string, callback: (order: Database.Orders) => void) {
     try {
     pb.collection(COLLECTIONS.ORDERS).subscribe('*', (data) => {
-      const order = castRecord<Order>(data.record);
+      const order = castRecord<Database.Orders>(data.record);
       if (order.merchant_id === merchantId) {
         callback(order);
       }

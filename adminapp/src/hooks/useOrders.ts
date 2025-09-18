@@ -1,17 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { OrderService } from '../services';
 import { queryKeys } from '../lib/queryClient';
-import type { Order, OrderStats, PaginatedResponse } from '../types';
+import type { Database, OrderStats, PaginatedResponse } from '../types';
 
 export const useOrders = (
   merchantId: string,
   page = 1,
   perPage = 20,
-  status?: Order['status']
+  status?: Database.Orders['status']
 ) => {
   return useQuery({
     queryKey: queryKeys.orders(merchantId, status, page),
-    queryFn: (): Promise<PaginatedResponse<Order>> => 
+    queryFn: (): Promise<PaginatedResponse<Database.Orders>> => 
       OrderService.getOrders(merchantId, page, perPage, status),
     enabled: !!merchantId,
     refetchInterval: 30000, // Refetch every 30 seconds for real-time updates
@@ -21,7 +21,7 @@ export const useOrders = (
 export const useOrder = (id: string) => {
   return useQuery({
     queryKey: queryKeys.order(id),
-    queryFn: (): Promise<Order> => OrderService.getOrder(id),
+    queryFn: (): Promise<Database.Orders> => OrderService.getOrder(id),
     enabled: !!id,
   });
 };
@@ -44,7 +44,7 @@ export const useUpdateOrderStatus = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: Order['status'] }) => 
+    mutationFn: ({ id, status }: { id: string; status: Database.Orders['status'] }) => 
       OrderService.updateOrderStatus(id, status),
     onSuccess: (updatedOrder, { id }) => {
       // Update specific order in cache

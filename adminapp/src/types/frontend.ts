@@ -166,6 +166,14 @@ export namespace Frontend {
   }
 }
 
+// Analytics and Statistics Types
+export interface OrderStats {
+  totalOrders: number;
+  totalRevenue: number;
+  averageOrderValue: number;
+  ordersByStatus: Record<Database.Orders['status'], number>;
+}
+
 // Utility types for transformations
 export type DatabaseToFrontend<T> =
   T extends Database.Users ? Frontend.User :
