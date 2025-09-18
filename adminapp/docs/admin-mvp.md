@@ -163,11 +163,11 @@ The MVP focuses on delivering core functionality that enables:
 ## Technical Requirements
 
 ### Core Architecture
-- **Frontend**: TypeScript React.js with mobile-first responsive design
-- **Backend**: Pocketbase for database and API
+- **Frontend**: TypeScript, React.js, Vite, React Error Boundary, with mobile-first responsive design
+- **Backend**: Pocketbase for database and API / Websocket server is Node JS + Express
 - **Real-time Updates**: WebSocket integration for live order updates
 - **State Management**: React hooks and context API
-- **UI Framework**: Tailwind CSS or similar for consistent styling
+- **UI Framework**: Tailwind CSS
 
 ### Database Collections (Pocketbase)
 ```
