@@ -37,10 +37,7 @@ module.exports = {
         'plugin:react-hooks/recommended',
         'plugin:jsx-a11y/recommended',
         'plugin:prettier/recommended',
-        'plugin:testing-library/react',
-        'plugin:jest-dom/recommended',
         'plugin:tailwindcss/recommended',
-        'plugin:vitest/legacy-recommended',
       ],
       rules: {
         'import/no-restricted-paths': [
@@ -53,26 +50,6 @@ module.exports = {
                 target: './src/features/auth',
                 from: './src/features',
                 except: ['./auth'],
-              },
-              {
-                target: './src/features/comments',
-                from: './src/features',
-                except: ['./comments'],
-              },
-              {
-                target: './src/features/discussions',
-                from: './src/features',
-                except: ['./discussions'],
-              },
-              {
-                target: './src/features/teams',
-                from: './src/features',
-                except: ['./teams'],
-              },
-              {
-                target: './src/features/users',
-                from: './src/features',
-                except: ['./users'],
               },
               // enforce unidirectional codebase:
 
