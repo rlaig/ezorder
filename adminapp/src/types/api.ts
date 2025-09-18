@@ -21,8 +21,8 @@ export type User = Entity<{
   firstName: string;
   lastName: string;
   email: string;
-  role: 'ADMIN' | 'USER';
-  teamId: string;
+  role: 'ADMIN' | 'MERCHANT';
+  merchantId?: string; // Only for merchant users
   bio: string;
 }>;
 
@@ -47,4 +47,66 @@ export type Comment = Entity<{
   body: string;
   discussionId: string;
   author: User;
+}>;
+
+// EZOrder specific types for MVP
+export type Merchant = Entity<{
+  name: string;
+  description: string;
+  address: string;
+  phone: string;
+  email: string;
+  status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+  ownerId: string; // User ID of the merchant owner
+}>;
+
+export type MenuCategory = Entity<{
+  name: string;
+  description?: string;
+  merchantId: string;
+  order: number; // For sorting
+  isActive: boolean;
+}>;
+
+export type MenuItem = Entity<{
+  name: string;
+  description: string;
+  price: number;
+  categoryId: string;
+  merchantId: string;
+  imageUrl?: string;
+  isAvailable: boolean;
+  order: number; // For sorting within category
+}>;
+
+export type Order = Entity<{
+  orderNumber: string;
+  merchantId: string;
+  tableNumber?: string;
+  status: 'PLACED' | 'PREPARING' | 'READY' | 'COMPLETED' | 'CANCELLED';
+  items: OrderItem[];
+  subtotal: number;
+  total: number;
+  paymentMethod: 'CASH' | 'GCASH';
+  paymentStatus: 'PENDING' | 'PAID' | 'REFUNDED';
+  specialInstructions?: string;
+  estimatedReadyTime?: number;
+}>;
+
+export type OrderItem = {
+  id: string;
+  menuItemId: string;
+  menuItem: MenuItem;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  specialInstructions?: string;
+};
+
+export type QRCode = Entity<{
+  merchantId: string;
+  name: string; // e.g., "Table 1", "Zone A"
+  qrCodeUrl: string;
+  customerUrl: string; // URL that the QR code points to
+  isActive: boolean;
 }>;

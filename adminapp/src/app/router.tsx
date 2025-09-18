@@ -4,12 +4,22 @@ import { createBrowserRouter } from 'react-router';
 import { RouterProvider } from 'react-router/dom';
 
 import { paths } from '@/config/paths';
-import { ProtectedRoute } from '@/lib/auth';
+import { ProtectedRoute, RoleBasedRoute } from '@/lib/auth';
 
 import {
   default as AppRoot,
   ErrorBoundary as AppRootErrorBoundary,
 } from './routes/app/root';
+
+import {
+  default as AdminRoot,
+  ErrorBoundary as AdminRootErrorBoundary,
+} from './routes/admin/root';
+
+import {
+  default as MerchantRoot,
+  ErrorBoundary as MerchantRootErrorBoundary,
+} from './routes/merchant/root';
 
 const convert = (queryClient: QueryClient) => (m: any) => {
   const { clientLoader, clientAction, default: Component, ...rest } = m;
@@ -35,6 +45,7 @@ export const createAppRouter = (queryClient: QueryClient) =>
       path: paths.auth.login.path,
       lazy: () => import('./routes/auth/login').then(convert(queryClient)),
     },
+    // Legacy app routes (redirect based on role)
     {
       path: paths.app.root.path,
       element: (
@@ -45,31 +56,99 @@ export const createAppRouter = (queryClient: QueryClient) =>
       ErrorBoundary: AppRootErrorBoundary,
       children: [
         {
-          path: paths.app.discussions.path,
+          path: paths.app.dashboard.path,
           lazy: () =>
-            import('./routes/app/discussions/discussions').then(
-              convert(queryClient),
-            ),
-        },
-        {
-          path: paths.app.discussion.path,
-          lazy: () =>
-            import('./routes/app/discussions/discussion').then(
-              convert(queryClient),
-            ),
-        },
-        {
-          path: paths.app.users.path,
-          lazy: () => import('./routes/app/users').then(convert(queryClient)),
+            import('./routes/app/dashboard').then(convert(queryClient)),
         },
         {
           path: paths.app.profile.path,
           lazy: () => import('./routes/app/profile').then(convert(queryClient)),
         },
+      ],
+    },
+
+    // Admin Portal Routes
+    {
+      path: paths.admin.root.path,
+      element: (
+        <RoleBasedRoute allowedRoles={['ADMIN']}>
+          <AdminRoot />
+        </RoleBasedRoute>
+      ),
+      ErrorBoundary: AdminRootErrorBoundary,
+      children: [
         {
-          path: paths.app.dashboard.path,
+          path: paths.admin.dashboard.path,
           lazy: () =>
-            import('./routes/app/dashboard').then(convert(queryClient)),
+            import('./routes/admin/dashboard').then(convert(queryClient)),
+        },
+        {
+          path: paths.admin.merchants.path,
+          lazy: () =>
+            import('./routes/admin/merchants').then(convert(queryClient)),
+        },
+        {
+          path: paths.admin.merchant.path,
+          lazy: () =>
+            import('./routes/admin/merchant').then(convert(queryClient)),
+        },
+        {
+          path: paths.admin.analytics.path,
+          lazy: () =>
+            import('./routes/admin/analytics').then(convert(queryClient)),
+        },
+        {
+          path: paths.admin.settings.path,
+          lazy: () =>
+            import('./routes/admin/settings').then(convert(queryClient)),
+        },
+      ],
+    },
+
+    // Merchant Dashboard Routes
+    {
+      path: paths.merchant.root.path,
+      element: (
+        <RoleBasedRoute allowedRoles={['MERCHANT']}>
+          <MerchantRoot />
+        </RoleBasedRoute>
+      ),
+      ErrorBoundary: MerchantRootErrorBoundary,
+      children: [
+        {
+          path: paths.merchant.dashboard.path,
+          lazy: () =>
+            import('./routes/merchant/dashboard').then(convert(queryClient)),
+        },
+        {
+          path: paths.merchant.menu.path,
+          lazy: () =>
+            import('./routes/merchant/menu').then(convert(queryClient)),
+        },
+        {
+          path: paths.merchant.orders.path,
+          lazy: () =>
+            import('./routes/merchant/orders').then(convert(queryClient)),
+        },
+        {
+          path: paths.merchant.order.path,
+          lazy: () =>
+            import('./routes/merchant/order').then(convert(queryClient)),
+        },
+        {
+          path: paths.merchant.qrCodes.path,
+          lazy: () =>
+            import('./routes/merchant/qr-codes').then(convert(queryClient)),
+        },
+        {
+          path: paths.merchant.analytics.path,
+          lazy: () =>
+            import('./routes/merchant/analytics').then(convert(queryClient)),
+        },
+        {
+          path: paths.merchant.settings.path,
+          lazy: () =>
+            import('./routes/merchant/settings').then(convert(queryClient)),
         },
       ],
     },

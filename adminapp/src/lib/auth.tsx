@@ -30,26 +30,17 @@ const loginWithEmailAndPassword = (data: LoginInput): Promise<AuthResponse> => {
   return api.post('/auth/login', data);
 };
 
-export const registerInputSchema = z
-  .object({
-    email: z.string().min(1, 'Required'),
-    firstName: z.string().min(1, 'Required'),
-    lastName: z.string().min(1, 'Required'),
-    password: z.string().min(5, 'Required'),
-  })
-  .and(
-    z
-      .object({
-        teamId: z.string().min(1, 'Required'),
-        teamName: z.null().default(null),
-      })
-      .or(
-        z.object({
-          teamName: z.string().min(1, 'Required'),
-          teamId: z.null().default(null),
-        }),
-      ),
-  );
+export const registerInputSchema = z.object({
+  email: z.string().min(1, 'Required').email('Invalid email'),
+  firstName: z.string().min(1, 'Required'),
+  lastName: z.string().min(1, 'Required'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  role: z.enum(['ADMIN', 'MERCHANT']),
+  // Merchant-specific fields (optional, only when role is MERCHANT)
+  merchantName: z.string().optional(),
+  merchantAddress: z.string().optional(),
+  merchantPhone: z.string().optional(),
+});
 
 export type RegisterInput = z.infer<typeof registerInputSchema>;
 
@@ -86,4 +77,44 @@ export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   return children;
+};
+
+// Role-based route protection
+export const RoleBasedRoute = ({ 
+  children, 
+  allowedRoles 
+}: { 
+  children: React.ReactNode;
+  allowedRoles: ('ADMIN' | 'MERCHANT')[];
+}) => {
+  const user = useUser();
+  const location = useLocation();
+
+  if (!user.data) {
+    return (
+      <Navigate to={paths.auth.login.getHref(location.pathname)} replace />
+    );
+  }
+
+  if (!allowedRoles.includes(user.data.role)) {
+    // Redirect to appropriate dashboard based on role
+    const redirectPath = user.data.role === 'ADMIN' 
+      ? paths.admin.dashboard.getHref()
+      : paths.merchant.dashboard.getHref();
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return children;
+};
+
+// Hook to get user role and check permissions
+export const useAuth = () => {
+  const user = useUser();
+  
+  return {
+    user: user.data,
+    isAdmin: user.data?.role === 'ADMIN',
+    isMerchant: user.data?.role === 'MERCHANT',
+    isAuthenticated: !!user.data,
+  };
 };
