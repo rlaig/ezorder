@@ -1,7 +1,9 @@
 // Re-export all types for easier imports
 export * from './auth';
-export * from './merchant';
+export * from './database';
+export * from './frontend';
 export * from './order';
+export * from './payment';
 
 // Common utility types
 export interface ApiResponse<T> {

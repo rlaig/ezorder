@@ -7,7 +7,13 @@ import { AdminLayout } from './layouts/AdminLayout';
 import { MerchantLayout } from './layouts/MerchantLayout';
 import { Login } from './pages/Login';
 import { AdminDashboard } from './pages/admin/Dashboard';
+import { MerchantList } from './pages/admin/MerchantList';
 import { MerchantDashboard } from './pages/merchant/Dashboard';
+import { MerchantProfile } from './pages/merchant/Profile';
+import { MenuManagement } from './pages/merchant/MenuManagement';
+import { OrderQueue } from './pages/merchant/OrderQueue';
+import { QRCodes } from './pages/merchant/QRCodes';
+import { MerchantAnalytics } from './pages/merchant/Analytics';
 import './App.css';
 
 function App() {
@@ -26,7 +32,7 @@ function App() {
             </ProtectedRoute>
           }>
             <Route index element={<AdminDashboard />} />
-            <Route path="merchants" element={<div>Merchants Page (Coming Soon)</div>} />
+            <Route path="merchants" element={<MerchantList />} />
             <Route path="analytics" element={<div>Analytics Page (Coming Soon)</div>} />
             <Route path="settings" element={<div>Settings Page (Coming Soon)</div>} />
           </Route>
@@ -38,11 +44,11 @@ function App() {
             </ProtectedRoute>
           }>
             <Route index element={<MerchantDashboard />} />
-            <Route path="orders" element={<div>Orders Page (Coming Soon)</div>} />
-            <Route path="menu" element={<div>Menu Management Page (Coming Soon)</div>} />
-            <Route path="qr-codes" element={<div>QR Codes Page (Coming Soon)</div>} />
-            <Route path="analytics" element={<div>Analytics Page (Coming Soon)</div>} />
-            <Route path="profile" element={<div>Profile Page (Coming Soon)</div>} />
+            <Route path="orders" element={<OrderQueue />} />
+            <Route path="menu" element={<MenuManagement />} />
+            <Route path="qr-codes" element={<QRCodes />} />
+            <Route path="analytics" element={<MerchantAnalytics />} />
+            <Route path="profile" element={<MerchantProfile />} />
           </Route>
 
           {/* Default redirect */}

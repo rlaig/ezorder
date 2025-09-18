@@ -102,7 +102,7 @@ export class OrderService {
       const typedOrders = castRecords<Order>(orders);
 
       const totalOrders = typedOrders.length;
-      const totalRevenue = typedOrders.reduce((sum, order) => sum + order.total, 0);
+      const totalRevenue = typedOrders.reduce((sum, order) => sum + order.total_amount, 0);
       const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
       const ordersByStatus = typedOrders.reduce((acc, order) => {
@@ -129,7 +129,7 @@ export class OrderService {
     try {
     pb.collection(COLLECTIONS.ORDERS).subscribe('*', (data) => {
       const order = castRecord<Order>(data.record);
-      if (order.merchantId === merchantId) {
+      if (order.merchant_id === merchantId) {
         callback(order);
       }
     });

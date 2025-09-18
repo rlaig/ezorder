@@ -52,12 +52,12 @@ export const useUpdateOrderStatus = () => {
       
       // Invalidate orders list for this merchant
       queryClient.invalidateQueries({
-        queryKey: ['orders', updatedOrder.merchantId],
+        queryKey: ['orders', updatedOrder.merchant_id],
       });
       
       // Invalidate order stats
       queryClient.invalidateQueries({
-        queryKey: queryKeys.orderStats(updatedOrder.merchantId),
+        queryKey: queryKeys.orderStats(updatedOrder.merchant_id),
       });
     },
   });
