@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useMerchantByUserId } from '../../hooks/useMerchants';
 import { useOrders, useUpdateOrderStatus } from '../../hooks/useOrders';
 import type { Database } from '../../types';
 
 export const OrderQueue: React.FC = () => {
   const { user } = useAuth();
-  const merchantId = user?.id || '';
+  const { data: merchant, isLoading: merchantLoading } = useMerchantByUserId(user?.id || '');
+  const merchantId = merchant?.id || '';
   
   const [statusFilter, setStatusFilter] = useState<Database.Orders['status'] | 'all'>('all');
   const { data: ordersData, isLoading } = useOrders(
@@ -102,7 +104,7 @@ export const OrderQueue: React.FC = () => {
       </div>
 
       {/* Orders Grid */}
-      {isLoading ? (
+      {isLoading || merchantLoading ? (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
         </div>

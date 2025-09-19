@@ -40,6 +40,30 @@ export class MerchantService {
   }
 
   /**
+   * Get merchant by user ID
+   */
+  static async getMerchantByUserId(userId: string): Promise<Database.Merchants> {
+    try {
+      const records = await pb.collection(COLLECTIONS.MERCHANTS).getFullList({
+        filter: `user_id = "${userId}"`,
+      });
+      
+      if (records.length === 0) {
+        throw new Error('Merchant profile not found for this user');
+      }
+      
+      if (records.length > 1) {
+        console.warn('Multiple merchant records found for user:', userId);
+      }
+      
+      return castRecord<Database.Merchants>(records[0]);
+    } catch (error) {
+      console.error('Get merchant by user ID error:', error);
+      throw new Error('Failed to fetch merchant profile');
+    }
+  }
+
+  /**
    * Create new merchant with user account
    */
   static async createMerchant(merchantData: {
@@ -60,21 +84,18 @@ export class MerchantService {
         passwordConfirm: password,
         name: merchantData.business_name,
         role: 'merchant',
-        // Don't set verified during creation - PocketBase manages this field
+        // Don't set verified during creation - PocketBase auth collections have special handling
       };
 
       const userRecord = await pb.collection(COLLECTIONS.USERS).create(userData);
 
-      // Step 1.5: If immediate verification is requested, update the user to verified
+      // Step 1.5: Handle verification request
       if (merchantData.verifyImmediately) {
-        try {
-          await pb.collection(COLLECTIONS.USERS).update(userRecord.id, {
-            verified: true,
-          });
-        } catch (verifyError) {
-          console.warn('Failed to verify user immediately, but user was created:', verifyError);
-          // Continue with merchant creation even if verification fails
-        }
+        console.log('📧 Verification requested for:', userRecord.email);
+        console.log('ℹ️  Note: Due to PocketBase auth collection constraints,');
+        console.log('   automatic verification during creation is not supported.');
+        console.log('   The merchant account has been created successfully.');
+        console.log('   An admin can verify the user manually through the PocketBase dashboard.');
       }
 
       // Step 2: Create merchant record linked to the user
@@ -98,6 +119,9 @@ export class MerchantService {
         const errorData = error as any;
         if (errorData.data?.data?.email) {
           throw new Error('Email address is already in use');
+        }
+        if (errorData.data?.data?.verified) {
+          throw new Error('There was an issue with the verification setting, but this should not prevent account creation');
         }
         if (errorData.data?.data?.user_id) {
           throw new Error('User account creation failed');

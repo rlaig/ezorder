@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useMerchantByUserId } from '../../hooks/useMerchants';
 import { useMenuCategories, useMenuItems, useCreateMenuCategory, useCreateMenuItem } from '../../hooks/useMenu';
 
 export const MenuManagement: React.FC = () => {
   const { user } = useAuth();
-  const merchantId = user?.id || '';
+  const { data: merchant, isLoading: merchantLoading } = useMerchantByUserId(user?.id || '');
+  const merchantId = merchant?.id || '';
   
   const { data: categories = [], isLoading: categoriesLoading } = useMenuCategories(merchantId);
   const { data: menuItems = [], isLoading: itemsLoading } = useMenuItems(merchantId);
@@ -178,7 +180,7 @@ export const MenuManagement: React.FC = () => {
           )}
 
           {/* Categories List */}
-          {categoriesLoading ? (
+          {categoriesLoading || merchantLoading ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
             </div>
@@ -359,7 +361,7 @@ export const MenuManagement: React.FC = () => {
           )}
 
           {/* Menu Items List */}
-          {itemsLoading ? (
+          {itemsLoading || merchantLoading ? (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
             </div>

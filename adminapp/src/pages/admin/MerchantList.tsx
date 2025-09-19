@@ -69,6 +69,11 @@ export const MerchantList: React.FC = () => {
         verifyImmediately: newMerchant.verifyImmediately,
       } as any);
       
+      // Show success message with verification note if applicable
+      if (newMerchant.verifyImmediately) {
+        alert('Merchant account created successfully!\n\nNote: Automatic email verification is not available due to PocketBase constraints. You can manually verify the user through the PocketBase admin dashboard if needed.');
+      }
+      
       setNewMerchant({
         business_name: '',
         email: '',

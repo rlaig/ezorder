@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useMerchantByUserId } from '../../hooks/useMerchants';
 import { MerchantService } from '../../services';
 import type { Database } from '../../types/database';
 
 export const QRCodes: React.FC = () => {
   const { user } = useAuth();
-  const merchantId = user?.id || '';
+  const { data: merchant, isLoading: merchantLoading } = useMerchantByUserId(user?.id || '');
+  const merchantId = merchant?.id || '';
   
   const [qrCodes, setQrCodes] = useState<Database.QrCodes[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -172,7 +174,7 @@ export const QRCodes: React.FC = () => {
       )}
 
       {/* QR Codes List */}
-      {isLoading ? (
+      {isLoading || merchantLoading ? (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
         </div>

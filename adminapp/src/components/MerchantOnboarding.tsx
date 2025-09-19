@@ -109,7 +109,7 @@ export const MerchantOnboarding: React.FC<MerchantOnboardingProps> = ({
           Merchant Onboarding
         </h2>
         <p className="text-sm text-gray-600 mt-1">
-          Create a new merchant account to get started with EZOrder
+          Create a new merchant account to get started with {import.meta.env.VITE_BRAND_NAME || 'EZOrder'}
         </p>
         
         {/* Progress indicator */}

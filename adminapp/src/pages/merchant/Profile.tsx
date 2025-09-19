@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { useMerchant, useUpdateMerchant } from '../../hooks/useMerchants';
+import { useMerchantByUserId, useUpdateMerchant } from '../../hooks/useMerchants';
 import type { Database } from '../../types/database';
 
 export const MerchantProfile: React.FC = () => {
   const { user } = useAuth();
-  const { data: merchant, isLoading, error } = useMerchant(user?.id || '');
+  const { data: merchant, isLoading, error } = useMerchantByUserId(user?.id || '');
   const updateMerchant = useUpdateMerchant();
   
   const [isEditing, setIsEditing] = useState(false);
@@ -29,11 +29,11 @@ export const MerchantProfile: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user?.id) return;
+    if (!merchant?.id) return;
 
     try {
       await updateMerchant.mutateAsync({
-        id: user.id,
+        id: merchant.id,
         data: formData,
       });
       setIsEditing(false);

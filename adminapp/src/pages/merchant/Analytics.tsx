@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useMerchantByUserId } from '../../hooks/useMerchants';
 import { useOrderStats } from '../../hooks/useOrders';
 
 export const MerchantAnalytics: React.FC = () => {
   const { user } = useAuth();
-  const merchantId = user?.id || '';
+  const { data: merchant, isLoading: merchantLoading } = useMerchantByUserId(user?.id || '');
+  const merchantId = merchant?.id || '';
   
   const [dateRange, setDateRange] = useState<'today' | 'week' | 'month' | 'custom'>('week');
   const [customStartDate, setCustomStartDate] = useState('');
@@ -110,7 +112,7 @@ export const MerchantAnalytics: React.FC = () => {
         </h2>
       </div>
 
-      {isLoading ? (
+      {isLoading || merchantLoading ? (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
         </div>

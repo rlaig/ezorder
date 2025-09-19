@@ -20,6 +20,14 @@ export const useMerchant = (id: string) => {
   });
 };
 
+export const useMerchantByUserId = (userId: string) => {
+  return useQuery({
+    queryKey: ['merchant', 'byUserId', userId],
+    queryFn: (): Promise<Database.Merchants> => MerchantService.getMerchantByUserId(userId),
+    enabled: !!userId,
+  });
+};
+
 // Type for merchant creation that includes user account data
 type MerchantCreationData = {
   business_name: string;
