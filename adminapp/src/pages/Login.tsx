@@ -57,11 +57,8 @@ export const Login: React.FC = () => {
               </svg>
             </div>
             <CardTitle className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Welcome Back
+            {import.meta.env.VITE_BRAND_NAME || 'EZOrder'} Portal
             </CardTitle>
-            <CardDescription className="text-base text-gray-600">
-              Sign in to {import.meta.env.VITE_BRAND_NAME || 'EZOrder'}
-            </CardDescription>
             <p className="text-sm text-gray-500">
               Admin and Merchant Portal
             </p>
@@ -131,24 +128,11 @@ export const Login: React.FC = () => {
             
             <div className="mt-6 text-center">
               <p className="text-xs text-gray-500">
-                Secure login powered by EZOrder
+                Secure login powered by {import.meta.env.VITE_BRAND_NAME || 'EZOrder'}
               </p>
             </div>
           </CardContent>
         </Card>
-        
-        {/* Demo credentials for development */}
-        {import.meta.env.DEV && (
-          <Card variant="outlined" className="mt-4 border-gray-200">
-            <CardContent padding="sm">
-              <p className="text-xs text-gray-600 font-medium mb-2">Demo Credentials:</p>
-              <div className="space-y-1 text-xs text-gray-500">
-                <p>Admin: admin@example.com / admin123</p>
-                <p>Merchant: merchant@example.com / merchant123</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   );
