@@ -15,7 +15,6 @@ export const MerchantList: React.FC = () => {
     phone: '',
     address: '',
     gcash_number: '',
-    verifyImmediately: false,
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -66,13 +65,7 @@ export const MerchantList: React.FC = () => {
         phone: newMerchant.phone || undefined,
         address: newMerchant.address || undefined,
         gcash_number: newMerchant.gcash_number || undefined,
-        verifyImmediately: newMerchant.verifyImmediately,
       } as any);
-      
-      // Show success message with verification note if applicable
-      if (newMerchant.verifyImmediately) {
-        alert('Merchant account created successfully!\n\nNote: Automatic email verification is not available due to PocketBase constraints. You can manually verify the user through the PocketBase admin dashboard if needed.');
-      }
       
       setNewMerchant({
         business_name: '',
@@ -82,7 +75,6 @@ export const MerchantList: React.FC = () => {
         phone: '',
         address: '',
         gcash_number: '',
-        verifyImmediately: false,
       });
       setFormErrors({});
       setShowCreateForm(false);
@@ -223,22 +215,6 @@ export const MerchantList: React.FC = () => {
                 </div>
               </div>
               
-              {/* Verification Toggle */}
-              <div className="mt-4 flex items-center">
-                <input
-                  type="checkbox"
-                  id="verifyImmediately"
-                  checked={newMerchant.verifyImmediately}
-                  onChange={(e) => setNewMerchant(prev => ({ ...prev, verifyImmediately: e.target.checked }))}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                />
-                <label htmlFor="verifyImmediately" className="ml-2 text-sm text-gray-700">
-                  Verify account immediately (skip email verification)
-                </label>
-              </div>
-              <p className="text-xs text-gray-500 mt-1 ml-6">
-                If unchecked, merchant will need to verify email before logging in
-              </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -284,7 +260,6 @@ export const MerchantList: React.FC = () => {
                     phone: '',
                     address: '',
                     gcash_number: '',
-                    verifyImmediately: false,
                   });
                   setFormErrors({});
                 }}

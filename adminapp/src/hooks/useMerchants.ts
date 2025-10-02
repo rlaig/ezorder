@@ -36,7 +36,6 @@ type MerchantCreationData = {
   phone?: string;
   address?: string;
   gcash_number?: string;
-  verifyImmediately?: boolean;
 };
 
 export const useCreateMerchant = () => {
