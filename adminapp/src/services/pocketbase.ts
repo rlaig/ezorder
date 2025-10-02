@@ -14,6 +14,7 @@ export const COLLECTIONS = {
   MERCHANTS: 'merchants',
   MENU_CATEGORIES: 'menu_categories',
   MENU_ITEMS: 'menu_items',
+  MENU_MODIFIERS: 'menu_modifiers',
   ORDERS: 'orders',
   ORDER_ITEMS: 'order_items',
   QR_CODES: 'qr_codes',

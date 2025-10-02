@@ -198,6 +198,31 @@ export class MerchantService {
   }
 
   /**
+   * Update menu category
+   */
+  static async updateMenuCategory(id: string, data: Partial<Database.MenuCategories>): Promise<Database.MenuCategories> {
+    try {
+      const record = await pb.collection(COLLECTIONS.MENU_CATEGORIES).update(id, data);
+      return castRecord<Database.MenuCategories>(record);
+    } catch (error) {
+      console.error('Update menu category error:', error);
+      throw new Error('Failed to update menu category');
+    }
+  }
+
+  /**
+   * Delete menu category
+   */
+  static async deleteMenuCategory(id: string): Promise<void> {
+    try {
+      await pb.collection(COLLECTIONS.MENU_CATEGORIES).delete(id);
+    } catch (error) {
+      console.error('Delete menu category error:', error);
+      throw new Error('Failed to delete menu category');
+    }
+  }
+
+  /**
    * Update menu item
    */
   static async updateMenuItem(id: string, data: Partial<Database.MenuItems>): Promise<Database.MenuItems> {
@@ -207,6 +232,149 @@ export class MerchantService {
     } catch (error) {
       console.error('Update menu item error:', error);
       throw new Error('Failed to update menu item');
+    }
+  }
+
+  /**
+   * Delete menu item
+   */
+  static async deleteMenuItem(id: string): Promise<void> {
+    try {
+      await pb.collection(COLLECTIONS.MENU_ITEMS).delete(id);
+    } catch (error) {
+      console.error('Delete menu item error:', error);
+      throw new Error('Failed to delete menu item');
+    }
+  }
+
+  /**
+   * Get menu modifiers for a menu item
+   */
+  static async getMenuModifiers(itemId: string): Promise<Database.MenuModifiers[]> {
+    try {
+      const records = await pb.collection(COLLECTIONS.MENU_MODIFIERS).getFullList({
+        filter: `item_id = "${itemId}"`,
+        sort: 'created',
+      });
+      return castRecords<Database.MenuModifiers>(records);
+    } catch (error) {
+      console.error('Get menu modifiers error:', error);
+      throw new Error('Failed to fetch menu modifiers');
+    }
+  }
+
+  /**
+   * Create menu modifier
+   */
+  static async createMenuModifier(data: Partial<Database.MenuModifiers>): Promise<Database.MenuModifiers> {
+    try {
+      const record = await pb.collection(COLLECTIONS.MENU_MODIFIERS).create(data);
+      return castRecord<Database.MenuModifiers>(record);
+    } catch (error) {
+      console.error('Create menu modifier error:', error);
+      throw new Error('Failed to create menu modifier');
+    }
+  }
+
+  /**
+   * Update menu modifier
+   */
+  static async updateMenuModifier(id: string, data: Partial<Database.MenuModifiers>): Promise<Database.MenuModifiers> {
+    try {
+      const record = await pb.collection(COLLECTIONS.MENU_MODIFIERS).update(id, data);
+      return castRecord<Database.MenuModifiers>(record);
+    } catch (error) {
+      console.error('Update menu modifier error:', error);
+      throw new Error('Failed to update menu modifier');
+    }
+  }
+
+  /**
+   * Delete menu modifier
+   */
+  static async deleteMenuModifier(id: string): Promise<void> {
+    try {
+      await pb.collection(COLLECTIONS.MENU_MODIFIERS).delete(id);
+    } catch (error) {
+      console.error('Delete menu modifier error:', error);
+      throw new Error('Failed to delete menu modifier');
+    }
+  }
+
+  /**
+   * Copy modifiers from one menu item to another
+   */
+  static async copyModifiers(fromItemId: string, toItemId: string, modifierIds: string[]): Promise<Database.MenuModifiers[]> {
+    try {
+      // Fetch the modifiers to copy
+      const sourceModifiers = await pb.collection(COLLECTIONS.MENU_MODIFIERS).getFullList({
+        filter: `item_id = "${fromItemId}" && id ?~ "${modifierIds.join('|')}"`,
+      });
+
+      // Create new modifiers for the target item
+      const copiedModifiers: Database.MenuModifiers[] = [];
+      
+      for (const sourceModifier of sourceModifiers) {
+        const newModifierData = {
+          item_id: toItemId,
+          name: sourceModifier.name,
+          type: sourceModifier.type,
+          options: sourceModifier.options,
+          required: sourceModifier.required,
+          min_selections: sourceModifier.min_selections,
+          max_selections: sourceModifier.max_selections,
+        };
+
+        const newModifier = await pb.collection(COLLECTIONS.MENU_MODIFIERS).create(newModifierData);
+        copiedModifiers.push(castRecord<Database.MenuModifiers>(newModifier));
+      }
+
+      return copiedModifiers;
+    } catch (error) {
+      console.error('Copy menu modifiers error:', error);
+      throw new Error('Failed to copy menu modifiers');
+    }
+  }
+
+  /**
+   * Batch copy modifiers with optional name modifications
+   */
+  static async batchCopyModifiers(
+    fromItemId: string, 
+    toItemId: string, 
+    modifiersToCopy: Array<{ id: string; name?: string }>
+  ): Promise<Database.MenuModifiers[]> {
+    try {
+      // Fetch the source modifiers
+      const modifierIds = modifiersToCopy.map(m => m.id);
+      const sourceModifiers = await pb.collection(COLLECTIONS.MENU_MODIFIERS).getFullList({
+        filter: `item_id = "${fromItemId}" && id ?~ "${modifierIds.join('|')}"`,
+      });
+
+      // Create new modifiers for the target item
+      const copiedModifiers: Database.MenuModifiers[] = [];
+      
+      for (const sourceModifier of sourceModifiers) {
+        const modifierToCopy = modifiersToCopy.find(m => m.id === sourceModifier.id);
+        
+        const newModifierData = {
+          item_id: toItemId,
+          name: modifierToCopy?.name || sourceModifier.name, // Use custom name if provided
+          type: sourceModifier.type,
+          options: sourceModifier.options,
+          required: sourceModifier.required,
+          min_selections: sourceModifier.min_selections,
+          max_selections: sourceModifier.max_selections,
+        };
+
+        const newModifier = await pb.collection(COLLECTIONS.MENU_MODIFIERS).create(newModifierData);
+        copiedModifiers.push(castRecord<Database.MenuModifiers>(newModifier));
+      }
+
+      return copiedModifiers;
+    } catch (error) {
+      console.error('Batch copy menu modifiers error:', error);
+      throw new Error('Failed to copy menu modifiers');
     }
   }
 

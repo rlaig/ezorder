@@ -33,6 +33,7 @@ export const queryKeys = {
   menuCategories: (merchantId: string) => ['menu', 'categories', merchantId] as const,
   menuItems: (merchantId: string, categoryId?: string) => 
     ['menu', 'items', merchantId, { categoryId }] as const,
+  menuModifiers: (itemId: string) => ['menu', 'modifiers', itemId] as const,
   
   // Orders
   orders: (merchantId: string, status?: string, page?: number) => 
